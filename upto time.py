@@ -1,7 +1,8 @@
 import pygame,random,button,time,sys
 
-
 # -------------------------------------------------------------------------------------------------
+
+
 def generate_options(result):
     options = []
     options.append(result)
@@ -55,9 +56,7 @@ def qmod():
     num1 = random.randint(100, 300)
     num2 = random.randint(1, 100)
     result = num1 % num2
-    # print(f"{num1} % {num2} is ")
     quest_display = f"{num1} % {num2} is"
-    # generate_options(result)
     return (quest_display, result)
 
 
@@ -81,14 +80,16 @@ options_font = pygame.font.Font('score-life.ttf',60)
 question_font = pygame.font.Font('score-life.ttf',100)
 time_font = pygame.font.Font('score-life.ttf',90)
 
+
 # load button images
 start_img = pygame.image.load('start_btn.png').convert_alpha()
 exit_img = pygame.image.load('exit_btn.png').convert_alpha()
 option_img = pygame.image.load('option.png').convert_alpha()
+logo_img = pygame.image.load('logo.png').convert_alpha()
 
 # create button instances
-start_button = button.Button(100, 200, start_img, 0.8)
-exit_button = button.Button(450, 200, exit_img, 0.8)
+start_button = button.Button(0, 0, logo_img, 1.0)
+exit_button = button.Button(580, 150, exit_img, 0.5)
 option1 = button.Button(100, 300, option_img, 0.2)
 option2 = button.Button(420, 300, option_img, 0.2)
 option3 = button.Button(100, 400, option_img, 0.2)
@@ -100,7 +101,6 @@ life=3
 screen_color = (200,200,180)
 def game_play():
     global  score,life,isGameon,screen_color
-
     score_text=f"Score : {score}"
     life_text=f"Life: {life}"
     operations = [qsum, qdif, qpro, qdiv, qmod]
@@ -110,16 +110,17 @@ def game_play():
     answer = returned_result[1]
     opt_render = generate_options(answer)
     correct_option = opt_render.index(answer) + 1
+    print(correct_option)
     question_display = question_font.render(quest_render, True, ("Black"))
+    question_text_width=question_font.size(quest_render)[0]
     option1_display = options_font.render(str(opt_render[0]), True, (0, 0, 0))
     option2_display = options_font.render(str(opt_render[1]), True, (0, 0, 0))
     option3_display = options_font.render(str(opt_render[2]), True, (0, 0, 0))
     option4_display = options_font.render(str(opt_render[3]), True, (0, 0, 0))
     score_display=score_and_life_font.render(score_text, True, ("Black"))
     life_display=score_and_life_font.render(life_text, True, ("Black"))
-
     start_time = time.time()
-    time_limit = 10
+    time_limit=25
 
     while isGameon and life>0:
         for event in pygame.event.get():
@@ -127,15 +128,15 @@ def game_play():
                 isGameon = False
 
         elapsed_time = time.time() - start_time
-        remaining_time = round(time_limit - elapsed_time, 2)
-        time_display = time_font.render(f"{remaining_time}", True, ("Black"))
-        time_text_width = time_font.size(f"{remaining_time}")[0]
-
+        remaining_time = round(time_limit - elapsed_time,2)
+        time_display=time_font.render(f"{remaining_time}", True, ("Black"))
+        time_text_width=time_font.size(f"{remaining_time}")[0]
         screen.fill(screen_color)
-        screen.blit(question_display, (235, 180))
+        # screen.blit(question_display, (235, 180))
+        screen.blit(question_display, (400-(question_text_width/2), 180))
         screen.blit(life_display, (680,30 ))
         screen.blit(score_display,(50,30))
-        screen.blit(time_display, (400 - (time_text_width / 2), 60))
+        screen.blit(time_display, (400-(time_text_width/2), 60))
         opt_prs=0
         if option1.draw(screen):
             opt_prs = 1
@@ -149,7 +150,6 @@ def game_play():
         screen.blit(option2_display, (510, 310))
         screen.blit(option3_display, (200, 410))
         screen.blit(option4_display, (510, 410))
-
         if opt_prs == correct_option:
             score+=1
             screen_color=(20,100,20)
@@ -168,12 +168,11 @@ def game_play():
 isGameon=True
 while isGameon:
 
-    screen.fill((202, 228, 241))
+    screen.blit(logo_img,(0,0))
 
     if start_button.draw(screen):
         game_play()
-    if exit_button.draw(screen):
-        isGameon = False
+
 
     # event handler
     for event in pygame.event.get():
